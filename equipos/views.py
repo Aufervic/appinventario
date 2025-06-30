@@ -4,8 +4,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Equipos
 from .serializers import EquiposSerializer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from  .permissions import IsAsistente
 class ListEquiposApiView(APIView):
     allowed_methods = ['GET', 'POST']
+    permission_classes = [IsAuthenticatedOrReadOnly,IsAsistente]
     def get(self,request):
         equipos=Equipos.objects.all()
         serializer=EquiposSerializer(equipos,many=True)
@@ -32,7 +35,7 @@ class DetailEquipos(APIView):
         equipo=self.get_object(pk)
         if equipo is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer=EquiposSerializer(data=request.data)
+        serializer=EquiposSerializer(equipo,data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)

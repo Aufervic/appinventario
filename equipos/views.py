@@ -46,9 +46,14 @@ class DetailEquipos(APIView):
         equipo.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-            
-        
-       
+'''
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
+from .models import Estado
+from .serializers import EstadoSerializer
 
-
+class ListEstadosApiView(ListAPIView, CreateAPIView):
+    allowed_methods = ['GET', 'POST']
+    serializer_class = EstadoSerializer
+    queryset = Estado.objects.all()
     
+'''

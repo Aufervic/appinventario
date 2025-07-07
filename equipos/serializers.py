@@ -1,5 +1,12 @@
 from rest_framework import serializers
-from .models import Equipos,Estado,TipoIngreso,EquiposMovimientos
+from .models import (
+    Equipos,
+    Estado,
+    TipoIngreso,
+    EquiposMovimientos,
+    Ubicacion,
+    Responsable,
+)
 
 class EquiposSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +25,12 @@ class EquiposMovimientosSerializer(serializers.ModelSerializer):
         model=EquiposMovimientos
         fields = '__all__'
 
+class UbicacionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ubicacion
+        fields = '__all__'
+
+class ResponsableSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Responsable
+        fields = '__all__'

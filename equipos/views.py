@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from  .permissions import IsAsistente
 class ListEquiposApiView(APIView):
     allowed_methods = ['GET', 'POST']
-    permission_classes = [IsAuthenticatedOrReadOnly,IsAsistente]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAsistente]
     def get(self,request):
         equipos=Equipos.objects.all()
         serializer=EquiposSerializer(equipos,many=True)
@@ -57,3 +57,27 @@ class ListEstadosApiView(ListAPIView, CreateAPIView):
     queryset = Estado.objects.all()
     
 '''
+
+from rest_framework.decorators import api_view, permission_classes
+from .models import Ubicacion
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticatedOrReadOnly, IsAsistente])
+def dashboard_summary(request):
+    total_inventarios = -1
+    total_equipos = Equipos.objects.count()
+    total_oficinas = Ubicacion.objects.count()
+
+
+    equipos_buenos = Equipos.objects.filter(estado__estado__iexact='Bueno').count()
+    equipos_regulares = Equipos.objects.filter(estado__estado__iexact='Regular').count()
+    equipos_malogrados = Equipos.objects.filter(estado__estado__iexact='Malogrado').count()
+
+    return Response({
+        "total_inventarios": total_inventarios,
+        "total_equipos": total_equipos,
+        "total_oficinas": total_oficinas,
+        "equipos_buenos": equipos_buenos,
+        "equipos_regulares": equipos_regulares,
+        "equipos_malogrados": equipos_malogrados,
+    })

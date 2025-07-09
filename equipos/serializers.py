@@ -34,3 +34,25 @@ class ResponsableSerializer(serializers.ModelSerializer):
     class Meta:
         model = Responsable
         fields = '__all__'
+
+
+class EquipoSerializerDinamico(serializers.ModelSerializer):
+    class Meta:
+        model = Equipos
+        fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        context = kwargs.get('context', {})
+        expand = context.get('expand', [])
+
+        super().__init__(*args, **kwargs)
+
+        if 'estado' in expand:
+            self.fields['estado'] = EstadoSerializer()
+        if 'ubicacion' in expand:
+            self.fields['ubicacion'] = UbicacionSerializer()
+        if 'responsable' in expand:
+            self.fields['responsable'] = ResponsableSerializer()
+        if 'tipo_ingreso' in expand:
+            self.fields['tipo_ingreso'] = TipoIngresoSerializer()
+

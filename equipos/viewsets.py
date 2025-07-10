@@ -4,13 +4,12 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .serializers import (
-    EquiposSerializer,
     EquipoSerializerDinamico,
     EstadoSerializer,
     TipoIngresoSerializer,
     UbicacionSerializer,
-    EquiposMovimientosSerializer,
     ResponsableSerializer,
+    MovimientoSerializerDinamico,
 )
 
 from .models import (
@@ -25,6 +24,7 @@ from .permissions import IsAsistente
 
 
 class EquipoViewSet(viewsets.ModelViewSet):
+    # Corregido para trabajar con serializador dinamico
     queryset = Equipos.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsAsistente]
 
@@ -62,9 +62,19 @@ class UbicacionViewSet(viewsets.ModelViewSet):
 
 
 class MovimientoViewSet(viewsets.ModelViewSet):
-    serializer_class = EquiposMovimientosSerializer
+    # Adaptado para trabajar con serializador dinamico
     queryset = EquiposMovimientos.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly, IsAsistente]
+
+    def get_serializer_class(self):
+        return MovimientoSerializerDinamico
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        expand = self.request.query_params.get("expand")
+        if expand:
+            context["expand"] = [e.strip() for e in expand.split(",")]
+        return context
 
 
 class ResponsableViewSet(viewsets.ModelViewSet):

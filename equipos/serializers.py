@@ -56,3 +56,19 @@ class EquipoSerializerDinamico(serializers.ModelSerializer):
         if 'tipo_ingreso' in expand:
             self.fields['tipo_ingreso'] = TipoIngresoSerializer()
 
+
+
+class MovimientoSerializerDinamico(serializers.ModelSerializer):
+    class Meta:
+        model = EquiposMovimientos
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        context = kwargs.get('context', {})
+        expand = context.get('expand', [])
+
+        super().__init__(*args, **kwargs)
+        if 'equipo' in expand:
+            self.fields['id_equipo'] = EquiposSerializer()
+        if 'ubicacion' in expand:
+            self.fields['ubicacion'] = UbicacionSerializer()
